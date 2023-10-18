@@ -38,8 +38,11 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'medicos' %}">Medicos</a>
               </li>
+              <li class="nav-item">
+                <a class="nav-link" href="#">{{email}}</a>
+              </li>
             </ul>
-            <a href="#">
+            <a href="{% url 'login' %}">
             <img src="{% static 'core/'%}img/feed-person.svg" alt="" width="30px" height="30px">
             </a>
         </div>

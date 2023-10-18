@@ -45,15 +45,19 @@ def registro(request):
 
             response = requests.post('https://intento1.chpineda.repl.co/api/pacientes/add', json=paciente)
             
+            response_data = response.json()
+
             data['mensaje2'] = response
+
 
             if response.status_code == 200:
                 data['mensaje'] = "Guardado correctamente en la API Flask"
             else:
-                data['mensaje'] = "Error al conectar con la API Flask"
-    
-    return render(request, 'registration/registro.html', data)
+                    data['mensaje'] = "Error al conectar con la API Flask: " + response_data.get('message', 'Mensaje de error desconocido')
+        else:
+            data['mensaje'] = "no es valido algo ptm"
 
+    return render(request, 'registration/registro_medico.html', data)
 
 
 def registro_medico(request):
@@ -126,17 +130,26 @@ def login(request):
 
 
             user = form.cleaned_data
+            email = user['email']
+
+        try:
 
             response = requests.post('https://intento1.chpineda.repl.co/api/pacientes/login', json=user)
+            response_data = response.json()
+
             
-            data['mensaje2'] = response.status_code
+
+            data['mensaje'] = response
 
             if response.status_code == 200:
-                data['mensaje'] = "Guardado correctamente en la API Flask"
+                if email:
+                    return render(request, 'home.html', {'email': email})
             else:
-                data['mensaje'] = "Error al conectar con la API Flask"
-                
-    else:
-        form = LoginPacienteForm()
-    
+                mensaje_error = response_data.get('message', 'Error desconocido')
+                return render(request, 'registration/login.html', {'error_message': mensaje_error})
+
+        except Exception as ex:
+            return render(request, 'registration/login.html', {'error_message': str(ex)})
+
     return render(request, 'registration/login.html',data)
+
