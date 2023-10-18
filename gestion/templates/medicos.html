@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Clinica
+{% endblock %}
+
+{% block body %}   
+
+<h1>medicos fdp</h1>  
+
+<table class="table table-dark ">
+    <tr>
+        <th>rut</th>
+        <th>sucursal</th>
+        <th>especialidad</th>
+        <th>nombre</th>
+        <th>apellido</th>
+        <th>usuario</th>
+        <th>email</th>
+    </tr>
+
+    {% for i in medicos %}
+        <tr>
+            <td> {{i.rut}} </td>
+            <td> {{i.sucursal}} </td>
+            <td> {{i.especialidad}} </td>
+            <td> {{i.nombre}} </td>
+            <td> {{i.apellido}} </td>
+            <td> {{i.usuario}} </td>
+            <td> {{i.email}} </td>
+        </tr>
+    {% endfor %}
+
+</table>
+
+    {{error_msg}}
+
+{% endblock %}     

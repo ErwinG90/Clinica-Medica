@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Clinica
+{% endblock %}
+
+{% load static %}
+
+
+{% block body %}   
+
+<h1>pacientes kkkkk ven 3 - chl 0</h1>  
+
+<table class="table table-dark ">
+    <tr>
+        <th>rut</th>
+        <th>nombre</th>
+        <th>apellido</th>
+        <th>usuario</th>
+        <th>email</th>
+        <th>direccion</th>
+        <th>telefono</th>
+    </tr>
+
+    {% for i in pacientes %}
+        <tr>
+            <td> {{i.rut}} </td>
+            <td> {{i.nombre}} </td>
+            <td> {{i.apellido}} </td>
+            <td> {{i.usuario}} </td>
+            <td> {{i.email}} </td>
+            <td> {{i.direccion}} </td>
+            <td> {{i.telefono}} </td>
+        </tr>
+    {% endfor %}
+
+</table>
+
+    {{mensaje}}
+
+{% endblock %}     
