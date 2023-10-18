@@ -9,7 +9,10 @@ Clinica
 
 {% block body %}   
 
-<a href=" {% url 'registro' %} ">paciente</a> 
-<a href="{% url 'registro_medico' %}">medico</a>
-
+<table class="table">
+    <tr>
+    <a href=" {% url 'registro' %} "><button type="button" class="btn btn-outline-success">Paciente</button></a> </tr>
+    <tr>|        |</tr>
+    <tr><a href="{% url 'registro_medico' %}"><button type="button" class="btn btn-outline-dark">Medico</button></a></tr>
+</table
 {% endblock %}     

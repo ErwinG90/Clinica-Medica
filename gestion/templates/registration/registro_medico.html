@@ -9,7 +9,7 @@ Clinica
 
 {% block body %}  
 
-<h1>registro caralho medicos</h1>
+<h1>registro medicos caralho</h1>
 
 <form method="POST">
     {% csrf_token %}
@@ -22,6 +22,9 @@ Clinica
     <button type="reset">Limpiar</button>
 </form>
 
-{{error_msg}}
+
+{{mensaje}}
+
+{{mensaje2}}
 
 {% endblock %}     

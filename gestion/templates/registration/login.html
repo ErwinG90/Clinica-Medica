@@ -1,4 +1,4 @@
-{% extends 'templates/base.html' %}
+{% extends 'base.html' %}
 
 {% block title %}
 Clinica
@@ -8,17 +8,17 @@ Clinica
 
 {% block body %}   
 
-    <form action="" method="POST">
+    <form method="POST">
+        {% csrf_token %}
 
-        <label for=""></label>
-        <input type="usuario" name="usuario" id="usuario">
+        <table>
+        {{ form.as_table }}
+        </table>
 
-        <label for=""></label>
-        <input type="password" name="contraseña" id="contraseña">
-
-        <button type="submit">Ingresar</button>
+        <button type="submit">Guardar</button>
         <button type="reset">Limpiar</button>
-
     </form>
+
+    {{mensaje2}}
 
 {% endblock %}     

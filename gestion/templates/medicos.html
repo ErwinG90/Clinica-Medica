@@ -17,6 +17,7 @@ Clinica
         <th>apellido</th>
         <th>usuario</th>
         <th>email</th>
+        <th>estado</th>
     </tr>
 
     {% for i in medicos %}
@@ -28,6 +29,7 @@ Clinica
             <td> {{i.apellido}} </td>
             <td> {{i.usuario}} </td>
             <td> {{i.email}} </td>
+            <td>activo</td>
         </tr>
     {% endfor %}
 
