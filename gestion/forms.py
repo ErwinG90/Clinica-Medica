@@ -67,7 +67,7 @@ def validate_rut( rut):
 
 
 class PacienteForm(forms.Form):
-    rut = RutField(label="Rut",validators=[validate_rut],widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 26.621.232-1'}),required=True)
+    rut = RutField(label="Rut",validators=[validate_rut],widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 266212321'}),required=True)
     nombre = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Juan'}))
     apellido = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Pérez'}))
     usuario = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: usuario123'}))
