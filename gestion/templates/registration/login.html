@@ -8,15 +8,18 @@ Clinica
 
 {% block body %}   
 
-    <form method="POST">
+    <form method="post">
         {% csrf_token %}
-
-        <table>
-        {{ form.as_table }}
-        </table>
-
-        <button type="submit">Guardar</button>
-        <button type="reset">Limpiar</button>
+        <div class="form-group">
+            <label for="{{ form.email.id_for_label }}">Email:</label>
+            {{ form.email }}
+        </div>
+        <br><br>
+        <div class="form-group">
+            <label for="{{ form.contraseña.id_for_label }}">Contraseña:</label>
+            {{ form.contraseña }}
+        </div>
+        <button type="submit" class="btn btn-primary">Iniciar sesión</button>
     </form>
 
     {{error_message}}

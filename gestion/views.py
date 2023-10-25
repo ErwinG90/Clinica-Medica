@@ -33,32 +33,34 @@ def home(request):
     return render(request, 'home.html',context)
 
 def registro(request):
-    data = {
-        'form':PacienteForm()
-    }
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
-
-
             paciente = form.cleaned_data
+            rut = paciente['rut']
+            paciente['rut'] = str(rut[:9])
 
-            response = requests.post('https://intento1.chpineda.repl.co/api/pacientes/add', json=paciente)
-            
-            response_data = response.json()
+            if paciente['contraseña'] == paciente['confirmar_contraseña']:
 
-            data['mensaje2'] = response
+                response = requests.post('https://intento1.chpineda.repl.co/api/pacientes/add', json=paciente)
+                response_data = response.json()
 
-
-            if response.status_code == 200:
-                data['mensaje'] = "Guardado correctamente en la API Flask"
+                if response.status_code == 200:
+                    mensaje = "Guardado correctamente"
+                    return render(request, 'home.html', {'email': mensaje})
+                else:
+                    mensaje = "Error al conectar con la API Flask: " + response_data.get('message', 'Mensaje de error desconocido')
+                
+                return render(request, 'registration/registro.html', {'form': form, 'mensaje': mensaje})
             else:
-                    data['mensaje'] = "Error al conectar con la API Flask: " + response_data.get('message', 'Mensaje de error desconocido')
+                # Si las contraseñas no coinciden, muestra un mensaje de error
+                form.add_error('confirmar_contraseña', "Las contraseñas no coinciden")
+                return render(request, 'registration/registro.html', {'form': form})
         else:
-            data['mensaje'] = "no es valido algo ptm"
-
-    return render(request, 'registration/registro_medico.html', data)
-
+            return render(request, 'registration/registro.html', {'form': form , 'errors': form.errors, 'mensaje': 'formulario invalido'})
+    else:
+        form = PacienteForm()
+        return render(request, 'registration/registro.html', {'form': form})
 
 def registro_medico(request):
     data = {
@@ -82,9 +84,10 @@ def registro_medico(request):
             if response.status_code == 200:
                 data['mensaje'] = "Guardado correctamente en la API Flask"
             else:
-                data['mensaje'] = "Error al conectar con la API Flask: " + response_data.get('message', 'Mensaje de error desconocido')
+                data['mensaje2'] = "Error al conectar con la API Flask: " + response_data.get('message', 'Mensaje de error desconocido')
         else:
-            data['mensaje'] = "no es valido algo ptm"
+            data['mensaje3'] = form.errors
+            return render(request, 'registration/registro_medico.html', data)
                 
     
     return render(request, 'registration/registro_medico.html', data)

@@ -20,5 +20,10 @@ Clinica
 </ul>
 
 </h3>
-<h1>{{email}}</h1>
+
+{% if email %}
+    <div class="alert alert-success">{{ email }}</div>
+{% endif %}
+
+
 {% endblock %}     

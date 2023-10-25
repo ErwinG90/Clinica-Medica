@@ -9,31 +9,34 @@ Clinica
 
 {% block body %}   
 
-<h1>pacientes kkkkk ven 3 - chl 0</h1>  
+<h1>Pacientes</h1>  
 
-<table class="table table-dark ">
-    <tr>
-        <th>rut</th>
-        <th>nombre</th>
-        <th>apellido</th>
-        <th>usuario</th>
-        <th>email</th>
-        <th>direccion</th>
-        <th>telefono</th>
-    </tr>
-
-    {% for i in pacientes %}
+<table class="table table-striped table-light">
+    <thead class="thead-light">
         <tr>
-            <td> {{i.rut}} </td>
-            <td> {{i.nombre}} </td>
-            <td> {{i.apellido}} </td>
-            <td> {{i.usuario}} </td>
-            <td> {{i.email}} </td>
-            <td> {{i.direccion}} </td>
-            <td> {{i.telefono}} </td>
+            <th>Rut</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Usuario</th>
+            <th>Email</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
         </tr>
-    {% endfor %}
+    </thead>
 
+    <tbody>
+        {% for i in pacientes %}
+            <tr>
+                <td>{{ i.rut }}</td>
+                <td>{{ i.nombre }}</td>
+                <td>{{ i.apellido }}</td>
+                <td>{{ i.usuario }}</td>
+                <td>{{ i.email }}</td>
+                <td>{{ i.direccion }}</td>
+                <td>{{ i.telefono }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
 </table>
 
     {{mensaje}}
