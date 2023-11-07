@@ -12,10 +12,10 @@ Clinica
     
 {% block body %}
 
-<h1 class="text-white">Agendar Cita del medico {{ rut }}</h1>
+<h1 class="text-white">Agendar Cita Con Medico <br>{{nombreMed}} {{apellidoMed}} <br>Rut: {{ rut }}</h1>
 <br>
 
-<form method="POST" action="{% url 'agendar_cita' rut %}">
+<form method="POST" action="{% url 'agendar_cita' rut nombreMed apellidoMed %}">
     {% csrf_token %}
     <select name="fecha" id="fecha" class="form-control">
         {% for date in unique_dates %}

@@ -75,7 +75,7 @@ class PacienteForm(forms.Form):
     contraseña = forms.CharField(max_length=300,min_length=5, required=True,widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mínimo 5 dígitos'}))
     confirmar_contraseña = forms.CharField(max_length=300, min_length=5, required=True, widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirma tu contraseña'}))
     direccion = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 556 Paicaví, Concepción'}))
-    telefono = forms.IntegerField(max_value=999999999 , min_value=900000000,required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 982617201'}))
+    telefono = forms.IntegerField(max_value=999999999 , min_value=1,required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 982617201'}))
 
 
 

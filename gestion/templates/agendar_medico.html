@@ -75,9 +75,9 @@ Clinica
                         Ultimo Respiro
                     {% endif %}
                 </td>
-                <td>{{ medico.nombre }} {{medico.apellido}}</td>
+                <td >{{ medico.nombre }} {{medico.apellido}}</td>
                 <td>
-                    <a href="{% url 'agendar_cita' medico.rut %}" class="btn btn-primary">Agendar Cita</a>
+                    <a href="{% url 'agendar_cita' medico.rut medico.nombre medico.apellido %}" class="btn btn-primary">Agendar Cita</a>
                 </td>
             </tr>
         {% endfor %}
