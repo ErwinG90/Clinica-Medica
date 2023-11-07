@@ -3,12 +3,14 @@ from .forms import *
 import requests
 from django.http import HttpResponse
 from requests.exceptions import RequestException
+from django.http import HttpResponseBadRequest
 
+PACIENTE_LOGIN = 0
 # Create your views here.
 
 def mi_vista(request):
     try:
-        api_url = 'https://practice.erwgonzalez.repl.co/'
+        api_url = ''
         response = requests.get(api_url)
 
         if response.status_code == 200:
@@ -20,19 +22,15 @@ def mi_vista(request):
         return HttpResponse(f'Error en la solicitud a la API: {e}')
 
 def home(request):
-    altura = 5  # Altura de la pirámide
-    piramide = []
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    return render(request, 'home.html',{'rut_paciente':rut_paciente})
 
-    for i in range(1, altura + 1):
-        espacios = altura - i
-        asteriscos = 2 * i - 1
-        linea = ' ' * espacios + '*' * asteriscos
-        piramide.append(linea)
-
-    context = {'piramide': piramide}
-    return render(request, 'home.html',context)
+def cerrar_sesion(request):
+    request.session['PACIENTE_LOGIN'] = ''
+    return redirect('home')
 
 def registro(request):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
@@ -51,20 +49,22 @@ def registro(request):
                 else:
                     mensaje = "Error al conectar con la API Flask: " + response_data.get('message', 'Mensaje de error desconocido')
                 
-                return render(request, 'registration/registro.html', {'form': form, 'mensaje': mensaje})
+                return render(request, 'registro.html', {'form': form, 'mensaje': mensaje})
             else:
                 # Si las contraseñas no coinciden, muestra un mensaje de error
                 form.add_error('confirmar_contraseña', "Las contraseñas no coinciden")
-                return render(request, 'registration/registro.html', {'form': form})
+                return render(request, 'registro.html', {'form': form})
         else:
-            return render(request, 'registration/registro.html', {'form': form , 'errors': form.errors, 'mensaje': 'formulario invalido'})
+            return render(request, 'registro.html', {'form': form , 'errors': form.errors, 'mensaje': 'formulario invalido'})
     else:
         form = PacienteForm()
-        return render(request, 'registration/registro.html', {'form': form})
+        return render(request, 'registro.html', {'form': form,'rut_paciente':rut_paciente})
 
 def registro_medico(request):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
     data = {
-        'form':MedicoForm()
+        'form':MedicoForm(),
+        'rut_paciente':rut_paciente
     }
     if request.method == 'POST':
         form = MedicoForm(request.POST)
@@ -72,8 +72,8 @@ def registro_medico(request):
 
 
             medico = form.cleaned_data
-            medico['especialidad_id'] = int(medico['especialidad_id'])
-            medico['sucursal_id'] = int(medico['sucursal_id'])
+            medico['especialidad_id'] = str(medico['especialidad_id'])
+            medico['sucursal_id'] = str(medico['sucursal_id'])
 
             response = requests.post('https://intento1.chpineda.repl.co/api/medicos/add', json=medico)
             
@@ -87,22 +87,23 @@ def registro_medico(request):
                 data['mensaje2'] = "Error al conectar con la API Flask: " + response_data.get('message', 'Mensaje de error desconocido')
         else:
             data['mensaje3'] = form.errors
-            return render(request, 'registration/registro_medico.html', data)
+            return render(request, 'registro_medico.html', data)
                 
     
-    return render(request, 'registration/registro_medico.html', data)
+    return render(request, 'registro_medico.html', data)
 
 
 def lista_registro(request):
-    return render(request, 'lista_registro.html')
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    return render(request, 'lista_registro.html',{'rut_paciente':rut_paciente})
 
 def Pacientes(request):
-
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
     response = requests.get('https://intento1.chpineda.repl.co/api/pacientes')
     try:
         if response.status_code == 200:
             pacientes = response.json()
-            return render(request, 'pacientes.html', {'pacientes': pacientes})
+            return render(request, 'pacientes.html', {'pacientes': pacientes,'rut_paciente':rut_paciente})
         else:
             return render(request, 'pacientes.html', {'error_msg': 'Error al obtener datos de pacientes'})
     except Exception as ex:
@@ -111,11 +112,12 @@ def Pacientes(request):
 
 
 def medicos(request):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
     response = requests.get('https://intento1.chpineda.repl.co/api/medicos')
     try:
         if response.status_code == 200:
             medicos = response.json()
-            return render(request, 'medicos.html', {'medicos': medicos})
+            return render(request, 'medicos.html', {'medicos': medicos,'rut_paciente':rut_paciente})
         else:
             return render(request, 'medicos.html', {'error_msg': 'Error al obtener datos de medicos'})
     except Exception as ex:
@@ -123,36 +125,137 @@ def medicos(request):
 
 
 
+ 
+
 def login(request):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
     data = {
-        'form':LoginPacienteForm()
+        'form': LoginPacienteForm(),
+        'rut_paciente':rut_paciente
     }
     if request.method == 'POST':
         form = LoginPacienteForm(request.POST)
         if form.is_valid():
-
-
             user = form.cleaned_data
             email = user['email']
 
+            try:
+                response = requests.post('https://intento1.chpineda.repl.co/api/pacientes/login', json=user)
+                response2 = requests.get('https://intento1.chpineda.repl.co/api/pacientes/')
+
+                pacientes = response2.json()
+
+                for paciente in pacientes:
+                    if paciente.get('email') == email:
+                        paciente_rut = paciente.get('rut')
+
+                        # Almacena el valor del rut en la sesión
+                        request.session['PACIENTE_LOGIN'] = paciente_rut
+
+                        response_data = response.json()
+                        data['mensaje'] = response
+
+                        if response.status_code == 200:
+                            return render(request, 'home.html', {'rut_paciente': paciente_rut})
+                        else:
+                            mensaje_error = response_data.get('message', 'Error desconocido')
+                            return render(request, 'login.html', {'error_message': mensaje_error})
+            except Exception as ex:
+                return render(request, 'login.html', {'error_message': str(ex)})
+
+    return render(request, 'login.html', data)
+
+def agendar_doctor(request):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    response = requests.get('https://intento1.chpineda.repl.co/api/medicos')
+    try:
+        if response.status_code == 200:
+            medicos = response.json()
+            return render(request, 'agendar_medico.html', {'medicos': medicos,'rut_paciente':rut_paciente})
+        else:
+            return render(request, 'agendar_medico.html', {'error_msg': 'Error al obtener datos de medicos'})
+    except Exception as ex:
+        return render(request, 'agendar_medico.html', {'error_msg': str(ex)})
+    
+
+def agendar_cita(request, rut):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    unique_dates = set() 
+
+    if request.method == 'POST':
+        selected_date = request.POST.get('fecha')
+        response = requests.get('https://intento1.chpineda.repl.co/api/disponibilidad/' + rut )
+        disponibilidad = response.json()
+        return render(request, 'agendar_cita.html', {'rut_paciente':rut_paciente,'disponibilidad': disponibilidad, 'rut': rut, 'unique_dates': unique_dates, 'selected_date': selected_date})
+    else:
+        response = requests.get('https://intento1.chpineda.repl.co/api/disponibilidad/' + rut)
+
+        for item in response.json():
+            date = item.get('fecha')
+            if date not in unique_dates:
+                unique_dates.add(date)
+
         try:
-
-            response = requests.post('https://intento1.chpineda.repl.co/api/pacientes/login', json=user)
-            response_data = response.json()
-
-            
-
-            data['mensaje'] = response
-
             if response.status_code == 200:
-                if email:
-                    return render(request, 'home.html', {'email': email})
+                return render(request, 'agendar_cita.html', {'rut': rut, 'unique_dates': list(unique_dates)})
             else:
-                mensaje_error = response_data.get('message', 'Error desconocido')
-                return render(request, 'registration/login.html', {'error_message': mensaje_error})
-
+                return render(request, 'agendar_cita.html', {'error_msg': 'Error al obtener datos de medicos'})
         except Exception as ex:
-            return render(request, 'registration/login.html', {'error_message': str(ex)})
+            return render(request, 'agendar_cita.html', {'error_msg': str(ex)})
 
-    return render(request, 'registration/login.html',data)
+def lista_citas(request):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    response = requests.get('https://intento1.chpineda.repl.co/api/cita_medica/')
+    try:
+        if response.status_code == 200:
+            citas = response.json()
+            return render(request, 'citas.html', {'citas': citas ,'rut_paciente':rut_paciente})
+        else:
+            return render(request, 'citas.html', {'error_msg': 'Error al obtener datos de medicos'})
+    except Exception as ex:
+        return render(request, 'citas.html', {'error_msg': str(ex)})
+
+def cambiar_cita(request, id):
+    if request.method == 'POST':
+        estado = request.POST.get('estado')
+
+        response = requests.put('https://intento1.chpineda.repl.co/api/cita_medica/cambiar/' + id + '/' + estado)
+
+        if response.status_code == 200:
+            return redirect('citas')
+        else:
+            return HttpResponseBadRequest('Error al cambiar el estado')
+    else:
+        return HttpResponseBadRequest('Método no permitido')
+
+def agendar_cita2(request, rut_medico, id_disponibilidad):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    if rut_paciente == '':
+        return redirect('login')
+    else:
+        cita = {'rut_medico': rut_medico, 'id_disponibilidad': id_disponibilidad, 'rut_paciente': rut_paciente, 'id_estado': 4}
+        response = requests.post('https://intento1.chpineda.repl.co/api/cita_medica/add', json=cita)
+        response2 = requests.put('https://intento1.chpineda.repl.co/api/disponibilidad/cambiar/'+id_disponibilidad+'/'+'False')
+
+        try:
+            if response.status_code == 200 and response2.status_code == 200:
+                return render(request, 'home.html', {'rut_paciente': rut_paciente,'msj':'cita programada :)'})
+            else:
+                return render(request, 'citas.html', {'error_msg': 'Error al agendar la cita'})
+        except Exception as ex:
+            return render(request, 'citas.html', {'error_msg': str(ex)})
+
+def mis_citas(request):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    response = requests.get('https://intento1.chpineda.repl.co/api/cita_medica/citas/'+ str(rut_paciente) )
+
+    try:
+        if response.status_code == 200:
+            citas = response.json()
+            return render(request, 'mis_citas.html', {'citas':citas,'rut_paciente': rut_paciente})
+        else:
+            return render(request, 'mis_citas.html', {'error_msg': 'Error al agendar la cita'})
+    except Exception as ex:
+            return render(request, 'mis_citas.html', {'error_msg': str(ex)})
+    
 

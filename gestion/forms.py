@@ -67,9 +67,9 @@ def validate_rut( rut):
 
 
 class PacienteForm(forms.Form):
-    rut = RutField(label="Rut",validators=[validate_rut],widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 266212321'}),required=True)
-    nombre = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Juan'}))
-    apellido = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: Pérez'}))
+    rut = RutField(label="Rut",validators=[validate_rut],widget=forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Ej: 266212321'}),required=True)
+    nombre = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Ej: Juan'}))
+    apellido = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control ', 'placeholder': 'Ej: Pérez'}))
     usuario = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: usuario123'}))
     email = forms.EmailField(max_length=300, required=True,widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Ej: usuario@example.com'}))
     contraseña = forms.CharField(max_length=300,min_length=5, required=True,widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Mínimo 5 dígitos'}))
@@ -77,11 +77,11 @@ class PacienteForm(forms.Form):
     direccion = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 556 Paicaví, Concepción'}))
     telefono = forms.IntegerField(max_value=999999999 , min_value=900000000,required=True,widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Ej: 982617201'}))
 
-    
+
 
 
 class MedicoForm(forms.Form):
-    rut = forms.IntegerField(required=True)
+    rut = forms.CharField(required=True,widget=forms.TextInput(attrs={'class': 'form-control '}))
 
     
     sucursal_id = forms.ChoiceField(
@@ -102,11 +102,11 @@ class MedicoForm(forms.Form):
         widget=forms.Select(attrs={'class': 'form-control'}),
         required=True
     )
-    nombre = forms.CharField(max_length=300, required=True)
-    apellido = forms.CharField(max_length=300, required=True)
-    usuario = forms.CharField(max_length=300, required=True)
-    email = forms.EmailField(max_length=300, required=True)
-    contraseña = forms.CharField(max_length=300, widget=forms.PasswordInput, required=True)
+    nombre = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control '}))
+    apellido = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control '}))
+    usuario = forms.CharField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control '}))
+    email = forms.EmailField(max_length=300, required=True,widget=forms.TextInput(attrs={'class': 'form-control '}))
+    contraseña = forms.CharField(max_length=300,widget=forms.PasswordInput(attrs={'class': 'form-control'}), required=True)
 
 
 
