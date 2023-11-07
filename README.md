@@ -26,6 +26,7 @@ Entre las funciones que ofrece está el:
 Para ejecutar es necesario:
 
 1.- pip install -r requirements.txt
+
 2.- py manager.py runserver
 
 
