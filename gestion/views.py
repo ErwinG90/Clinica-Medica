@@ -22,7 +22,7 @@ def mi_vista(request):
         return HttpResponse(f'Error en la solicitud a la API: {e}')
 
 def home(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     return render(request, 'home.html',{'rut_paciente':rut_paciente})
 
 def cerrar_sesion(request):
@@ -30,7 +30,7 @@ def cerrar_sesion(request):
     return redirect('home')
 
 def registro(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     if request.method == 'POST':
         form = PacienteForm(request.POST)
         if form.is_valid():
@@ -61,7 +61,7 @@ def registro(request):
         return render(request, 'registro.html', {'form': form,'rut_paciente':rut_paciente})
 
 def registro_medico(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     data = {
         'form':MedicoForm(),
         'rut_paciente':rut_paciente
@@ -94,11 +94,11 @@ def registro_medico(request):
 
 
 def lista_registro(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     return render(request, 'lista_registro.html',{'rut_paciente':rut_paciente})
 
 def Pacientes(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     response = requests.get('https://intento1.chpineda.repl.co/api/pacientes')
     try:
         if response.status_code == 200:
@@ -112,7 +112,7 @@ def Pacientes(request):
 
 
 def medicos(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     response = requests.get('https://intento1.chpineda.repl.co/api/medicos')
     try:
         if response.status_code == 200:
@@ -128,7 +128,7 @@ def medicos(request):
  
 
 def login(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     data = {
         'form': LoginPacienteForm(),
         'rut_paciente':rut_paciente
@@ -166,7 +166,7 @@ def login(request):
     return render(request, 'login.html', data)
 
 def agendar_doctor(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     response = requests.get('https://intento1.chpineda.repl.co/api/medicos')
     try:
         if response.status_code == 200:
@@ -179,7 +179,7 @@ def agendar_doctor(request):
     
 
 def agendar_cita(request, rut):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     unique_dates = set() 
 
     if request.method == 'POST':
@@ -204,7 +204,7 @@ def agendar_cita(request, rut):
             return render(request, 'agendar_cita.html', {'error_msg': str(ex)})
 
 def lista_citas(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     response = requests.get('https://intento1.chpineda.repl.co/api/cita_medica/')
     try:
         if response.status_code == 200:
@@ -229,7 +229,7 @@ def cambiar_cita(request, id):
         return HttpResponseBadRequest('Método no permitido')
 
 def agendar_cita2(request, rut_medico, id_disponibilidad):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     if rut_paciente == '':
         return redirect('login')
     else:
@@ -246,7 +246,7 @@ def agendar_cita2(request, rut_medico, id_disponibilidad):
             return render(request, 'citas.html', {'error_msg': str(ex)})
 
 def mis_citas(request):
-    rut_paciente = request.session.get('PACIENTE_LOGIN', None)
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     response = requests.get('https://intento1.chpineda.repl.co/api/cita_medica/citas/'+ str(rut_paciente) )
 
     try:
