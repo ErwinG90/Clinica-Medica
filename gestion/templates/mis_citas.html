@@ -69,10 +69,7 @@ Clinica
                     <form method="POST" action="{% url 'cambiar_cita' i.id %}">
                         {% csrf_token %}
                         <select name="estado" id="estado" class="form-control">
-                            <option value="4">Programada</option>
-                            <option value="5">Confirmada</option>
                             <option value="6">Anulada</option>
-                            <option value="7">Completada</option>
                         </select>
                         <td>
                             <button type="submit" class="btn btn-primary">Cambiar estado</button>
