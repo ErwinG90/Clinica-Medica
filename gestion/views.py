@@ -157,7 +157,6 @@ def login(request):
                     if paciente.get('email') == email:
                         paciente_rut = paciente.get('rut')
 
-                        # Almacena el valor del rut en la sesión
                         request.session['PACIENTE_LOGIN'] = paciente_rut
 
                         response_data = response.json()
@@ -166,10 +165,14 @@ def login(request):
                         if response.status_code == 200:
                             return render(request, 'home.html', {'rut_paciente': paciente_rut})
                         else:
+                            request.session['PACIENTE_LOGIN'] = ''
+                            paciente_rut = ''
                             mensaje_error = response_data.get('message', 'Error desconocido')
-                            return render(request, 'login.html', {'error_message': mensaje_error})
+                            return render(request, 'login.html', {'error_message': mensaje_error,'rut_paciente': paciente_rut,'form': LoginPacienteForm()})
             except Exception as ex:
-                return render(request, 'login.html', {'error_message': str(ex)})
+                request.session['PACIENTE_LOGIN'] = ''
+                paciente_rut = ''
+                return render(request, 'login.html', {'error_message': str(ex),'data':data,'rut_paciente': paciente_rut})
 
     return render(request, 'login.html', data)
 
