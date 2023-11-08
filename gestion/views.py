@@ -278,4 +278,13 @@ def mis_citas(request):
     except Exception as ex:
             return render(request, 'mis_citas.html', {'error_msg': str(ex)})
     
+# def send_simple_message():
+# 	return requests.post(
+# 		"https://api.mailgun.net/v3/sandboxb335643e7f2d4eb0889119ec87dc125a.mailgun.org/messages",
+# 		auth=("api", "<PRIVATE_API_KEY>"),
+# 		data={"from": "Mailgun Sandbox <postmaster@sandboxb335643e7f2d4eb0889119ec87dc125a.mailgun.org>",
+# 			"to": "Erwin <erw.gonzalez@duocuc.cl>",
+# 			"subject": "Hello Erwin",
+# 			"text": "Congratulations Erwin, you just sent an email with Mailgun!  You are truly awesome!"})
+
 
