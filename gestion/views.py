@@ -10,12 +10,12 @@ PACIENTE_LOGIN = 0
 
 def mi_vista(request):
     try:
-        api_url = ''
+        api_url = 'https://apis.digital.gob.cl/fl/feriados'
         response = requests.get(api_url)
 
         if response.status_code == 200:
             mensaje_hello = response.text
-            return HttpResponse(f'Mensaje de la API: {mensaje_hello}')
+            return HttpResponse(f'Mensaje de la API: {mensaje_hello, response}')
         else:
             return HttpResponse('Error al obtener el mensaje de la API')
     except RequestException as e:
@@ -233,11 +233,31 @@ def lista_citas(request):
     except Exception as ex:
         return render(request, 'citas.html', {'error_msg': str(ex)})
 
+def cambiar_cita_estado(request, id, id_disponibilidad):
+    if request.method == 'POST':
+        estado = request.POST.get('estado')
+        estado_final = 'True'
+
+        if estado == '6':
+            estado_final = 'True'
+        elif estado in ('4', '5', '7'):
+            estado_final = 'False'
+
+        response = requests.put('https://intento1.chpineda.repl.co/api/cita_medica/cambiar/' + id + '/' + estado)
+        response2 = requests.put('https://intento1.chpineda.repl.co/api/disponibilidad/cambiar/' + id_disponibilidad + '/' + estado_final)
+
+        if response.status_code == 200 and response2.status_code == 200:
+            return redirect('citas')
+        else:
+            return HttpResponseBadRequest('Error al cambiar el estado')
+    else:
+        return HttpResponseBadRequest('Método no permitido') 
+
 def cambiar_cita(request, id):
     if request.method == 'POST':
         estado = request.POST.get('estado')
 
-        response = requests.put('https://intento1.chpineda.repl.co/api/cita_medica/cambiar/' + id + '/' + estado)
+        response = requests.put('https://intento1.chpineda.repl.co/api/cita_medica/cambiar/' + id + '/' +  estado)
 
         if response.status_code == 200:
             return redirect('citas')
@@ -278,13 +298,6 @@ def mis_citas(request):
     except Exception as ex:
             return render(request, 'mis_citas.html', {'error_msg': str(ex)})
     
-# def send_simple_message():
-# 	return requests.post(
-# 		"https://api.mailgun.net/v3/sandboxb335643e7f2d4eb0889119ec87dc125a.mailgun.org/messages",
-# 		auth=("api", "<PRIVATE_API_KEY>"),
-# 		data={"from": "Mailgun Sandbox <postmaster@sandboxb335643e7f2d4eb0889119ec87dc125a.mailgun.org>",
-# 			"to": "Erwin <erw.gonzalez@duocuc.cl>",
-# 			"subject": "Hello Erwin",
-# 			"text": "Congratulations Erwin, you just sent an email with Mailgun!  You are truly awesome!"})
-
+def agendar_horario(request,rut):
+    return render(request, 'agendar_horario.html',{'rut':rut})
 

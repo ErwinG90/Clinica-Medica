@@ -18,6 +18,7 @@ Clinica
             <th>apellido</th>
             <th>usuario</th>
             <th>email</th>
+            <th>Agregar Horario</th>
         </tr>
     </thead>
 
@@ -47,6 +48,9 @@ Clinica
                 <td> {{i.apellido}} </td>
                 <td> {{i.usuario}} </td>
                 <td> {{i.email}} </td>
+                <td>
+                    <a href="{% url 'agendar_horario' i.rut %}" class="btn btn-primary">Horario</a>
+                </td>
             </tr>
         {% endfor %}
     </tbody>

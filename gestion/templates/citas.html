@@ -69,7 +69,7 @@ Clinica
                 <td><a href="#de_momento_no_se_puede_manito" class="btn btn-danger">Enviar Correo</a></td>
                 <td>
 
-                    <form method="POST" action="{% url 'cambiar_cita' i.id %}">
+                    <form method="POST" action="{% url 'cambiar_cita_estado' i.id i.id_disponibilidad %}">
                         {% csrf_token %}
                         <select name="estado" id="estado" class="form-control">
                             <option value="4">Programada</option>
