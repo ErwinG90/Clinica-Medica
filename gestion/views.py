@@ -4,6 +4,7 @@ import requests
 from django.http import HttpResponse
 from requests.exceptions import RequestException
 from django.http import HttpResponseBadRequest
+from django.core.mail import send_mail
 
 PACIENTE_LOGIN = 0
 # Create your views here.
@@ -275,10 +276,21 @@ def agendar_cita2(request, rut_medico, id_disponibilidad):
         response = requests.post('https://intento1.chpineda.repl.co/api/cita_medica/add', json=cita)
         response2 = requests.put('https://intento1.chpineda.repl.co/api/disponibilidad/cambiar/'+id_disponibilidad+'/'+'False')
         response3 = requests.get('https://intento1.chpineda.repl.co/api/cita_medica/citas/'+ str(rut_paciente) )
+        response4 = requests.get('https://intento1.chpineda.repl.co/api/pacientes/'+ str(rut_paciente))
 
         try:
             if response.status_code == 200 and response2.status_code == 200 and response3.status_code == 200:
                 citas = response3.json()
+                email = response4.json()
+                # print('hola jefe')
+                # print(email)
+                # print(response4)
+                subject = 'Confirmación cita médica'
+                message = 'Reserva de cita médica confirmada'
+                from_email = 'lifemedcher@gmail.com'
+                recipient_list = [email]
+                
+                send_mail(subject, message, from_email, recipient_list)
                 return render(request, 'mis_citas.html', {'citas':citas,'rut_paciente': rut_paciente,'msj':'cita programada :)'})
             else:
                 return render(request, 'citas.html', {'error_msg': 'Error al agendar la cita'})
@@ -301,3 +313,67 @@ def mis_citas(request):
 def agendar_horario(request,rut):
     return render(request, 'agendar_horario.html',{'rut':rut})
 
+
+# def confirmaciontoma(request,data):
+#     api_url = "https://centromedico.aldarroyo.repl.co/api/atenciones/add"
+    
+#     # Reemplaza comillas simples por comillas dobles en la cadena JSON
+#     data = data.replace("'", '"')
+
+#     data = json.loads(data)  # Convierte la cadena JSON en un diccionario
+
+#     api_url = "https://centromedico.aldarroyo.repl.co/api/atenciones/add"
+
+#     atencion = {
+#         "fecha_consulta": data['fecha'],
+#         "rut_medico": data['rut'],
+#         "hora_consulta": data['id_bloque'],
+#         "rut_paciente": data['rut_paciente'].replace("-", "")
+#     }
+    
+#     if request.method == 'POST':
+#         data_json = json.dumps(atencion)
+        
+#         correo = str(request.POST.get('correo'))
+    
+        
+#         headers = {'Content-Type': 'application/json'}
+#         try:
+#             # Realizar una solicitud POST a la API de Flask para crear un usuario
+#             response = requests.post(api_url, data=data_json, headers=headers)
+
+#             # Comprobar si la solicitud fue exitosa (código de estado 200 para revisar si hay respuesta de la api)
+#             if response.status_code == 200:
+#                 respuesta = response.json()
+#                 print(respuesta)
+#                 if respuesta.get("message") :
+#                     messages.warning(request, "No se registro el usuario")
+                    
+#                 else:
+#                     print("JALOOO")
+                    
+#                     # Genera la URL con el objeto JSON directamente en la URL
+#                     url_destino = f'/resumen/{respuesta}'
+                    
+#                     send_mail(
+#                         'Reserva hora centro medico',
+#                         'Hora confirmada.',
+#                         'apicorreosduoc@gmail.com',
+#                         [correo],
+#                         fail_silently=False,
+#                         )
+                    
+#                     return redirect(url_destino)
+                    
+                    
+#             else:
+#                 messages.warning(request,'No se pudo crear la atencion en la API de Flask')
+                
+#         except:
+#             messages.warning(request,'Error de conexión a la API de Flask')
+    
+
+    
+    
+    
+#     return render(request, 'confirmacion-toma.html')
