@@ -299,19 +299,6 @@ def agendar_horario(request, rut):
         return render(request, 'agendar_horario.html', {'rut': rut, 'rut_paciente': rut_paciente})
 
 
-def cambiar_cita(request, id):
-    if request.method == 'POST':
-        estado = request.POST.get('estado')
-
-        response = requests.put('https://intento1.chpineda.repl.co/api/cita_medica/cambiar/' + id + '/' +  estado)
-
-        if response.status_code == 200:
-            return redirect('citas')
-        else:
-            return HttpResponseBadRequest('Error al cambiar el estado')
-    else:
-        return HttpResponseBadRequest('Método no permitido')
-
 def agendar_cita2(request, rut_medico, id_disponibilidad):
     rut_paciente = request.session.get('PACIENTE_LOGIN', '')
     if rut_paciente == '':

@@ -24,6 +24,9 @@ Clinica
 
     <tbody>
         {% for i in citas %}
+            {% if i.id_estado == 6 %}
+
+            {% else %}
             <tr>
                 <td>{{ i.id }}</td>
 
@@ -66,10 +69,13 @@ Clinica
                 <td>{{ i.rut_medico }}</td>
                 <td>{{ i.rut_paciente }}</td>
                 <td>
-                    <form method="POST" action="{% url 'cambiar_cita' i.id %}">
+                    <form method="POST" action="{% url 'cambiar_cita_estado' i.id i.id_disponibildad %}">
                         {% csrf_token %}
                         <select name="estado" id="estado" class="form-control">
+                            <option value="4">Programada</option>
+                            <option value="5">Confirmada</option>
                             <option value="6">Anulada</option>
+                            <option value="7">Completada</option>
                         </select>
                         <td>
                             <button type="submit" class="btn btn-primary">Cambiar estado</button>
@@ -77,6 +83,7 @@ Clinica
                     </form>
                 </td>
             </tr>
+            {% endif %}
         {% endfor %}
     </tbody>
 </table>

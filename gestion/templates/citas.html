@@ -25,6 +25,9 @@ Clinica
 
     <tbody>
         {% for i in citas %}
+            {% if i.id_estado == 6 %}
+
+            {% else %}
             <tr>
                 <td>{{ i.id }}</td>
 
@@ -83,6 +86,7 @@ Clinica
                     </form>
                 </td>
             </tr>
+            {% endif %}
         {% endfor %}
     </tbody>
 </table>
