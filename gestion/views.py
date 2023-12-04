@@ -5,6 +5,7 @@ from django.http import HttpResponse
 from requests.exceptions import RequestException
 from django.http import HttpResponseBadRequest
 from django.core.mail import send_mail
+from datetime import datetime, timedelta
 
 PACIENTE_LOGIN = 0
 # Create your views here.
@@ -253,6 +254,50 @@ def cambiar_cita_estado(request, id, id_disponibilidad):
             return HttpResponseBadRequest('Error al cambiar el estado')
     else:
         return HttpResponseBadRequest('Método no permitido') 
+    
+def agendar_horario(request, rut):
+    rut_paciente = request.session.get('PACIENTE_LOGIN', '')
+
+    if request.method == 'POST':
+        try:
+            id_desde_hora = int(request.POST.get('id_desde_hora'))
+            id_hasta_hora = int(request.POST.get('id_hasta_hora'))
+            id_desde_dia = int(request.POST.get('id_desde_dia'))
+            id_hasta_dia = int(request.POST.get('id_hasta_dia'))
+            desde_fecha = datetime.strptime(request.POST.get('desde_fecha'), '%Y-%m-%d')
+            hasta_fecha = datetime.strptime(request.POST.get('hasta_fecha'), '%Y-%m-%d')
+
+            data = []
+
+            current_date = desde_fecha
+            while current_date <= hasta_fecha:
+                current_day = current_date.weekday()
+
+                if id_desde_dia <= current_day <= id_hasta_dia:
+                    current_hour = id_desde_hora
+                    while current_hour <= id_hasta_hora:
+                        entry = {
+                            'rut_medico': rut,
+                            'id_bloque': current_hour,
+                            'fecha': current_date.strftime('%Y-%m-%d'),
+                            'estado': True
+                        }
+                        data.append(entry)
+                        current_hour += 1
+
+                current_date += timedelta(days=1)
+
+            for entry in data:
+                response = requests.post('https://intento1.chpineda.repl.co/api/disponibilidad/agregar', json=entry)
+                response.raise_for_status()
+
+            return render(request, 'agendar_horario.html', {'rut_paciente': rut_paciente, 'rut': rut, 'success_message': 'Horarios agregados exitosamente'})
+
+        except requests.exceptions.RequestException as e:
+            return render(request, 'agendar_horario.html', {'rut_paciente': rut_paciente, 'rut': rut, 'error_message': f'Error al agregar horarios: {str(e)}'})
+    else:
+        return render(request, 'agendar_horario.html', {'rut': rut, 'rut_paciente': rut_paciente})
+
 
 def cambiar_cita(request, id):
     if request.method == 'POST':
@@ -310,8 +355,7 @@ def mis_citas(request):
     except Exception as ex:
             return render(request, 'mis_citas.html', {'error_msg': str(ex)})
     
-def agendar_horario(request,rut):
-    return render(request, 'agendar_horario.html',{'rut':rut})
+
 
 
 # def confirmaciontoma(request,data):

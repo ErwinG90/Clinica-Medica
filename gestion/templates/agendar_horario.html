@@ -16,9 +16,14 @@ Clinica
     <h6>-No se tomara en cuenta los dias Sabado y Domingo</h6>
     <h6>-No se tomara en cuenta los dias Feriados</h6>
     <h6>-Se tomara la fecha actual como minimo</h6>
+
+    <h2> {{success_message}} </h2>
 </div>
 
+
+
 <form method="POST">
+    {% csrf_token %}
     <div style="display: flex; justify-content: space-between;">
 
         <div style="flex: 1; margin-right: 10px;">
@@ -38,8 +43,8 @@ Clinica
         </div>
 
         <div style="flex: 1; margin-left: 10px;">
-            <label class="text-white" for="desde_dia">Dia Inicio</label>
-            <select name="id_desde_hora" id="id_desde_hora" class="form-control">
+            <label class="text-white" for="hasta_dia">Hora Fin</label>
+            <select name="id_hasta_hora" id="id_hasta_hora" class="form-control">
                 <option value="1">08:00 - 09:00</option>
                 <option value="2">09:00 - 10:00</option>
                 <option value="3">10:00 - 11:00</option>
@@ -58,8 +63,8 @@ Clinica
     <div style="display: flex; justify-content: space-between; margin-top: 10px;">
 
         <div style="flex: 1; margin-right: 10px;">
-            <label class="text-white" for="hasta_hora">Hora Fin</label>
-            <select name="id_hasta_hora" id="id_hasta_hora" class="form-control">
+            <label class="text-white" for="desde_dia">Dia Inicio</label>
+            <select name="id_desde_dia" id="id_desde_dia" class="form-control">
                 <option value="1">Lunes</option>
                 <option value="2">Martes</option>
                 <option value="3">Miércoles</option>
