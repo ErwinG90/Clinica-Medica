@@ -14,7 +14,7 @@ Entre las funciones que ofrece está el:
  (pacientes, médicos, disponibilidad, citas medicas)
 
 -Agregar
- (cita médica)
+ (cita médica, diponibilidad)
 
 -Filtrar
  (disponibilidad , cita médica)
